@@ -1,0 +1,41 @@
+{% extends '../base.html' %}
+
+{% block navbar %}
+  {% include 'components/navbar.html' %}
+{% endblock %}
+
+{% block title %}Listagem{% endblock %}
+
+<!-- Testando o tamanho da lista de veículos -->
+<p>Total de veículos: {{ veiculos|length }}</p>
+
+<!-- Testando a impressão de todos os veículos -->
+<pre>{{ veiculos }}</pre>
+
+{% block list %}
+  <div class="div-lista">
+    <h1>Lista de Veículos</h1>
+    <div class="row">
+      {% for v in veiculos %}  <!-- Corrigido para veiculos -->
+        <div class="card" style="width: 18rem; margin: 10px;">
+          <img class="card-img-top" src="{{ v.foto.url }}" alt="{{ v.modelo }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ v.modelo }}</h5>
+            <p class="card-text">Marca: {{ v.marca }}</p>
+            <p class="card-text">Combustivel: {{ v.combustivel }}</p>
+            <p class="card-text">Cor: {{ v.cor }}</p>
+            <p class="card-text">Ano: {{ v.ano }}</p>
+            <a class="button" href="{% url 'editar-veiculo' v.id %}">Editar</a>
+            <a class="button" href="{% url 'deletar-veiculo' v.id %}">Deletar</a>
+          </div>
+        </div>
+      {% empty %}
+        <p>Não há veículos disponíveis no momento.</p>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'components/footer.html' %}
+{% endblock %}

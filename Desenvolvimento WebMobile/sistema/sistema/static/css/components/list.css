@@ -1,0 +1,42 @@
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1* var(--bs-gutter-y));
+    margin-right: calc(-.5* var(--bs-gutter-x));
+    margin-left: calc(-.5* var(--bs-gutter-x));
+    justify-content: center;
+}
+.div-lista{
+    max-width: 78%;
+    width: 100%;
+}
+/* Estilos para os botões de ação (Editar e Deletar) */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #007bff; /* Cor padrão para o botão */
+    color: white; /* Cor do texto */
+    text-align: center;
+    text-decoration: none; /* Remove o sublinhado */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-weight: bold;
+    transition: background-color 0.3s ease; /* Transição suave ao passar o mouse */
+}
+
+/* Cor de fundo ao passar o mouse */
+.button:hover {
+    background-color: #0056b3; /* Cor mais escura ao passar o mouse */
+    cursor: pointer; /* Altera o cursor para o ponteiro */
+}
+
+/* Estilos específicos para o botão "Deletar" */
+.button[href*="deletar"] {
+    background-color: #dc3545; /* Cor vermelha para o botão de deletar */
+}
+
+.button[href*="deletar"]:hover {
+    background-color: #c82333; /* Cor mais escura ao passar o mouse */
+}

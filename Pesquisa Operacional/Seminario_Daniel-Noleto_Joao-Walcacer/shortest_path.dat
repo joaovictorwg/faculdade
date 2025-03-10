@@ -1,0 +1,19 @@
+# Conjunto de vértices
+set V := A B C D;
+
+# Conjunto de arestas com pesos
+set E := (A,B) (B,C) (C,D) (A,C) (B,D);
+
+# Pesos das arestas
+param w :=
+    A B 2
+    B C 1
+    C D 3
+    A C 4
+    B D 2;
+
+# Definição do vértice inicial e final
+param s := A;
+param t := D;
+
+end;

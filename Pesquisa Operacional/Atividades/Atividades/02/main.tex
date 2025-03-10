@@ -1,0 +1,99 @@
+\documentclass[12pt]{exam}
+\usepackage[utf8]{inputenc}
+%\usepackage[portuguese,brazil]{babel}
+%\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{graphicx}% delete the demo option in your actual code
+\usepackage{xcolor}
+\usepackage{tikz}
+
+% \usepackage[usenames,dvipsnames]{pstricks}
+\usepackage{epsfig}
+\usepackage{pst-grad} % For gradients
+\usepackage{pst-plot} % For axes
+\usepackage[space]{grffile} % For spaces in paths
+\usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+
+
+\pointpoints{ponto}{pontos}
+\hpword{Pontos:}
+\vpword{Pontos}
+\htword{Total}
+\vtword{Total:}
+\vsword{Resultado}
+
+
+\SolutionEmphasis{\color{red}}
+\CorrectChoiceEmphasis{\bf \color{red}}
+\renewcommand{\solutiontitle}{\noindent\textbf{Solução:}\enspace}
+
+
+\begin{document}
+
+%Este exame contêm \numpages\ páginas (incluindo esta capa) e \numquestions\ questões.\\
+%Total de \numpoints~ pontos.
+
+%\begin{center}
+%Grade Table (for teacher use only)\\
+%\addpoints
+%\gradetable[v][questions]
+%\end{center}
+
+%\noindent
+%\rule[2ex]{\textwidth}{2pt}
+
+\printanswers
+
+\begin{center}
+\textbf{{\Huge Atividades}}
+\end{center}
+
+\begin{questions}
+
+\question \ \\
+
+
+	\begin{equation*}	
+				\begin{array}{c r r c r c c }
+			(D) :&  \text{Maximize}   & 65x_1 & +  & 30x_2 \\
+			& \text{sujeito a:} & 2x_1 & + & 3x_2  & \geq & 7 \\
+			&                   & 2x_1 & + & 3x_2  & \leq & 12 \\
+			&                   &  x_1 &   &       & \leq & 4 \\
+			&                   & \multicolumn{5}{c}{x_1,~x_2 \geq 0}
+			\end{array}
+	\end{equation*}
+
+\question \ \\
+	\begin{equation*}	
+				\begin{array}{c r r c r c c }
+			(D) :&  \text{Maximizar}   & 2u_1 & +  & 3u_2 \\
+			& \text{sujeito a:} & u_1   &    &           & \leq   & 6 \\
+			&                           &          &    & u_2    & \leq   & 9 \\
+			&                           & 3u_1 & + & 4u_2  & \leq  & 42 \\
+			&                           & 5u_1 & + &  2u_2 & \leq   &  36 \\			
+			&                           & \multicolumn{5}{c}{u_1,~u_2 \geq 0}
+			\end{array}
+	\end{equation*}
+
+\question \ \\
+
+
+	\begin{equation*}	
+				\begin{array}{c r r c r c c }
+			(D) :&  \text{Minimize}   & -2x_1 & -  & x_2 \\
+			& \text{sujeito a:} &  x_1 & + &  x_2  & \leq & 5 \\
+			&                   & 2x_1 & + & 3x_2  & \leq & 12 \\
+			&                   &  x_1 &   &       & \leq & 4 \\
+			&                   & \multicolumn{5}{c}{x_1,~x_2 \geq 0}
+			\end{array}
+	\end{equation*}
+
+\end{questions}
+
+\end{document}

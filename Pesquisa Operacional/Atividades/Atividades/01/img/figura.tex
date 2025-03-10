@@ -1,0 +1,40 @@
+\documentclass[10pt]{standalone}
+\usepackage{pstricks-add}
+%\usepackage[margin=.5in]{geometry}
+\pagestyle{empty}
+\begin{document}
+\psset{xunit=1cm,yunit=1cm,algebraic=true,dimen=middle,dotstyle=o,dotsize=5pt 0,linewidth=1.6pt,arrowsize=3pt 2,arrowinset=0.25}
+\begin{pspicture*}(-3,-3)(15.12,14.12)
+\psaxes[labelFontSize=\scriptstyle,xAxis=true,yAxis=true,Dx=2,Dy=2,ticksize=-2pt 0,subticks=2]{->}(0,0)(-3,-3)(15.14,14.14)
+\pspolygon[linewidth=0pt,hatchcolor=black,fillstyle=crosshatch,hatchangle=45,hatchsep=0.4287177619999998](0,0)(0,9)(2,9)(4.285714285714286,7.285714285714286)(6,3)(6,0)
+\psline[linewidth=2pt](6,-3)(6,14)
+\psplot[linewidth=2pt]{-9.541714849200003}{28.699909521199995}{(--9-0*x)/1}
+\psplot[linewidth=2pt]{-9.541714849200003}{28.699909521199995}{(--42-3*x)/4}
+\psplot[linewidth=2pt]{-9.541714849200003}{28.699909521199995}{(--36-5*x)/2}
+\psline[linewidth=2pt](0,-12.933231652399998)(0,14.933422877600004)
+\psplot[linewidth=2pt]{-9.541714849200003}{28.699909521199995}{(-0-0*x)/1}
+
+%\psline[arrows=->,linewidth=2pt,linecolor=blue](0,0)(2,3)
+
+%\begin{scriptsize}
+\rput[bl](6.5,13){$u_1 \leq 6$}
+\rput[bl](-2.327355968200003,9.331169342800003){$u_2 \leq 9$}
+\rput[bl](8,2){$3u_1 + 4u_2 \leq 42$}
+\rput[bl](2.5,13){$5u_1+2u_2 \leq 36$}
+\rput[bl](0.5,13.7){$u_2$}
+\rput[bl](14.7,0.5){$u_1$}
+\psdots[dotsize=7pt 0,dotstyle=*,linecolor=black](0,0)
+\rput[bl](-0.5,0.3570189696000028){\black{$A$}}
+\psdots[dotsize=7pt 0,dotstyle=*,linecolor=black](0,9)
+\rput[bl](-0.5,9.360091971600003){\black{$B$}}
+\psdots[dotsize=7pt 0,dotstyle=*,linecolor=black](2,9)
+\rput[bl](2.162280053399996,9.360091971600003){\black{$C$}}
+\psdots[dotsize=7pt 0,dotstyle=*,linecolor=black](4.285714285714286,7.285714285714286)
+\rput[bl](4.477355968199996,7.645220923600004){\black{$D$}}
+\psdots[dotsize=7pt 0,dotstyle=*,linecolor=black](6,3)
+\rput[bl](6.192227016199995,3.358043303600003){\black{$E$}}
+\psdots[dotsize=7pt 0,dotstyle=*,linecolor=black](6,0)
+\rput[bl](6.192227016199995,0.3570189696000028){\black{$F$}}
+%\end{scriptsize}
+\end{pspicture*}
+\end{document}
