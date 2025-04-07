@@ -1,0 +1,63 @@
+Este código implementa um problema clássico de concorrência conhecido como Produtor-Consumidor utilizando threads e uma tentativa de controle de concorrência baseada em espera ocupada (busy-waiting), onde as threads (produtor e consumidor) aguardam de forma ativa até que as condições necessárias para suas execuções sejam atendidas.
+Explicação do Funcionamento:
+1. Estruturas e Variáveis Globais:
+
+    buffer: Um array de tamanho N_ITENS que serve como a "área compartilhada" entre as threads do produtor e consumidor. O produtor coloca itens no buffer e o consumidor os retira.
+
+    inicio e final: Índices que controlam onde o próximo item será retirado (inicio) e onde o próximo item será colocado (final).
+
+    cont: Um contador que mantém o número de itens presentes no buffer. Controla o fluxo de produção e consumo.
+
+2. Função do Produtor (produtor):
+
+    O produtor tenta adicionar itens ao buffer. Ele gera um item (simulado por um número i) e tenta colocá-lo no buffer, mas só pode fazê-lo se o buffer não estiver cheio (isto é, quando cont < N_ITENS).
+
+    A lógica de controle de concorrência do produtor é simples: ele aguarda ativamente (sem fazer nada além de checar a condição) até que haja espaço no buffer.
+
+    Após colocar o item no buffer, ele imprime uma mensagem indicando que o item foi produzido.
+
+    A operação final = (final + 1) % N_ITENS garante que o índice de inserção no buffer seja cíclico (ao atingir o final do buffer, ele volta ao início).
+
+    O produtor também dorme por um tempo aleatório (dado por sleep(random() % 3)) para permitir que a outra thread tenha tempo de executar.
+
+3. Função do Consumidor (consumidor):
+
+    O consumidor tenta retirar itens do buffer. Ele só pode retirar um item se o buffer não estiver vazio (cont > 0).
+
+    A lógica de controle de concorrência do consumidor também é baseada em espera ocupada: ele aguarda ativamente até que o buffer tenha pelo menos um item.
+
+    Após retirar um item, o consumidor imprime a mensagem indicando que o item foi consumido.
+
+    O valor do item retirado é verificado para garantir que o item foi consumido na ordem correta. Se o item consumido for menor ou maior do que o esperado, são exibidas mensagens de erro.
+
+    A operação inicio = (inicio + 1) % N_ITENS garante que o índice de retirada no buffer seja cíclico.
+
+4. Função main:
+
+    A função principal prepara o ambiente:
+
+        Inicializa o buffer (define todos os itens como 0).
+
+        Cria duas threads: uma para o produtor (thr_produtor) e outra para o consumidor (thr_consumidor).
+
+        As threads são então aguardadas para terminar sua execução utilizando pthread_join.
+
+    O programa termina quando ambas as threads (produtor e consumidor) concluírem seus trabalhos.
+
+Detalhes Importantes:
+
+    Espera ocupada (busy-waiting): A forma como as threads aguardam por condições específicas (se o buffer está cheio ou vazio) é chamada de espera ocupada. Elas entram em um laço while que só termina quando a condição desejada é atendida (o buffer tem espaço ou tem itens disponíveis). Esse tipo de controle de concorrência não é muito eficiente, pois as threads estão consumindo tempo de CPU mesmo quando não podem realizar nenhum trabalho, aguardando ativamente pela mudança das condições.
+
+    Sincronização e Concorrência: Este código usa um modelo simples de concorrência sem ferramentas de sincronização mais avançadas (como mutexes ou semáforos). O código assume que, de alguma forma, a concorrência é gerenciada pela espera ativa (embora isso não seja ideal). Em um sistema mais complexo, seria melhor usar mecanismos como mutexes para garantir que o produtor e o consumidor não acessem o buffer simultaneamente de forma inconsistente.
+
+Possíveis Problemas:
+
+    Espera ocupada: Como mencionado, o uso de espera ocupada é ineficiente, pois as threads ficam ocupando o processador sem realizar trabalho útil, o que pode prejudicar a performance em sistemas com múltiplas threads.
+
+    Não há sincronização entre as threads: O código não utiliza mecanismos de sincronização para proteger o acesso ao buffer compartilhado (como mutexes), o que pode levar a condições de corrida (race conditions), onde o produtor e o consumidor podem acessar o buffer ao mesmo tempo e modificar as variáveis globais de forma inconsistente.
+
+    Potencial de "desordem" de produção e consumo: A lógica de verificação de erros (se um item é consumido antes de ser produzido ou se foi produzido antes de a posição estar livre) pode gerar confusão ou falhas, caso haja alguma interferência de tempo de execução ou problemas de concorrência.
+
+Conclusão:
+
+Este código implementa uma solução simples e funcional para o problema de produtor-consumidor, mas com limitações evidentes em termos de eficiência e controle de concorrência. Para uma implementação mais robusta, técnicas mais avançadas de sincronização (como mutexes ou semáforos) seriam recomendadas para garantir uma execução mais eficiente e sem falhas.

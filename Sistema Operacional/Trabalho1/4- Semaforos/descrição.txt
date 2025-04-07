@@ -1,0 +1,80 @@
+Este código implementa um modelo de produtor-consumidor utilizando threads e semáforos para sincronizar o acesso a um buffer compartilhado entre as threads. O propósito do código é simular a interação entre duas threads: uma que gera itens (produtor) e outra que consome esses itens (consumidor). Ambas as threads acessam e modificam o buffer de forma concorrente, mas a sincronização entre elas é garantida através dos semáforos. Vamos detalhar o funcionamento e os conceitos envolvidos.
+1. Definição de Semáforos e Buffer
+
+    O código define um buffer de tamanho fixo (N_ITENS), representado por um vetor de inteiros.
+
+    São declarados dois semáforos:
+
+        pos_vazia: Controla as posições vazias no buffer. Inicialmente, o semáforo é inicializado com o valor N_ITENS, ou seja, o buffer está vazio e há N_ITENS espaços para preencher.
+
+        pos_ocupada: Controla as posições ocupadas no buffer. Inicialmente, esse semáforo é inicializado com o valor 0, pois inicialmente o buffer está vazio e não há itens para consumir.
+
+2. Threads
+
+O código cria duas threads: uma para o produtor e outra para o consumidor. Elas vão executar de maneira concorrente e interagir com o buffer.
+Função produtor
+
+    O produtor executa um loop no qual ele gera 3 vezes o número de itens do tamanho do buffer (3 * N_ITENS).
+
+    Dentro do loop:
+
+        sem_wait(&pos_vazia): O produtor tenta acessar uma posição vazia no buffer. Se não houver posições vazias (semáforo pos_vazia for 0), o produtor fica bloqueado até que o consumidor consuma um item e libere uma posição.
+
+        O produtor então coloca um item no buffer (buffer[final] = i), onde final indica o índice da posição no buffer.
+
+        sem_post(&pos_ocupada): O produtor sinaliza que uma posição no buffer foi ocupada, liberando o semáforo pos_ocupada e permitindo que o consumidor consuma o item.
+
+        O produtor aguarda um tempo aleatório (sleep(random() % 3)), permitindo que a outra thread (consumidor) execute sua parte.
+
+Função consumidor
+
+    O consumidor também executa um loop onde tenta consumir 3 vezes o número de itens do tamanho do buffer (3 * N_ITENS).
+
+    Dentro do loop:
+
+        sem_wait(&pos_ocupada): O consumidor tenta consumir um item. Se não houver itens no buffer (semáforo pos_ocupada for 0), ele fica bloqueado até que o produtor insira um item no buffer.
+
+        O consumidor retira o item da posição indicada por inicio do buffer.
+
+        sem_post(&pos_vazia): O consumidor sinaliza que uma posição do buffer foi liberada, permitindo que o produtor insira um novo item.
+
+        O consumidor também aguarda um tempo aleatório (sleep(random() % 3)), permitindo que o produtor execute.
+
+3. Sincronização entre as threads
+
+A sincronização é feita utilizando os semáforos pos_vazia e pos_ocupada:
+
+    pos_vazia impede que o produtor insira itens quando o buffer está cheio.
+
+    pos_ocupada impede que o consumidor consuma itens quando o buffer está vazio.
+
+Assim, os semáforos garantem que o produtor e o consumidor não acessem o buffer de maneira conflitante, e também garantem que o produtor não tente inserir itens quando o buffer está cheio, e o consumidor não tente consumir itens quando o buffer está vazio.
+4. Função main
+
+A função main faz o seguinte:
+
+    Inicializa os semáforos (sem_init).
+
+    Cria as threads do produtor e do consumidor.
+
+    Espera as threads terminarem a execução (pthread_join).
+
+    Destrói os semáforos após o término da execução (sem_destroy).
+
+5. Comportamento esperado
+
+    O produtor e o consumidor vão se alternar a execução de acordo com a disponibilidade de itens no buffer.
+
+    O produtor gera itens e os coloca no buffer, enquanto o consumidor retira itens do buffer e os consome.
+
+    O uso de semáforos garante que o buffer nunca seja acessado simultaneamente por ambas as threads de maneira inconsistente.
+
+6. Possíveis melhorias
+
+    O código poderia ser melhorado no que diz respeito ao tratamento de erros, por exemplo, verificando se as funções de criação das threads e manipulação de semáforos falham.
+
+    O uso de random() pode ser substituído por uma função mais controlada (como rand() após srand(time(NULL))) para maior previsibilidade.
+
+Resumo:
+
+Este código é um exemplo clássico de um problema de sincronização entre threads, onde dois processos (produtor e consumidor) compartilham um buffer e precisam ser sincronizados para evitar condições de corrida e garantir que os itens sejam produzidos e consumidos de maneira ordenada e segura. Os semáforos são usados para controlar o acesso ao buffer, garantindo que o produtor não insira itens quando o buffer estiver cheio e que o consumidor não consuma itens quando o buffer estiver vazio.

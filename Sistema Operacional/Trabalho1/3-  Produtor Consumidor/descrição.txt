@@ -1,0 +1,134 @@
+Este código implementa uma solução para o problema clássico de produtor-consumidor com controle de concorrência usando espera ocupada (busy-wait). Vou detalhar o funcionamento do código e seu propósito:
+Propósito
+
+O problema do produtor-consumidor é um clássico na programação concorrente, onde duas threads (ou processos) compartilham um recurso comum — neste caso, um buffer circular — e se alternam entre produzir e consumir itens.
+
+    O produtor gera itens e coloca no buffer.
+
+    O consumidor retira itens do buffer e os consome.
+
+    O buffer tem uma capacidade limitada, e é necessário garantir que o produtor não adicione itens quando o buffer estiver cheio e que o consumidor não tente consumir itens quando o buffer estiver vazio.
+
+Neste código, o controle de concorrência é feito de maneira simples com espera ocupada, ou seja, as threads ficam em um laço (while) esperando até que a condição desejada seja atendida (seja o buffer ter espaço ou itens disponíveis).
+Componentes e Explicação do Código
+Definições e Variáveis Globais
+
+#define N_ITENS 10
+int buffer[N_ITENS];
+int inicio = 0, final = 0, cont = 0;
+
+    buffer[N_ITENS]: O buffer é um array de tamanho fixo (10 elementos) que armazena os itens.
+
+    inicio, final: Índices usados para indicar a posição de leitura (consumo) e escrita (produção) no buffer.
+
+    cont: Um contador que mantém o número de itens no buffer.
+
+Função produtor
+
+void* produtor(void *v) {
+    int i, aux;
+
+    for (i = 0; i < 3 * N_ITENS; i++) {
+        while (cont == N_ITENS) ;
+        printf("Produtor, item = %d.\n", i);
+        final = (final + 1) % N_ITENS;
+        buffer[final] = i;
+        aux = cont;
+        sleep(random() % 3);
+        cont = aux + 1;
+    }
+    printf("Produção encerrada.\n");
+    return NULL;
+}
+
+    O produtor entra em um laço que se repete 3 * N_ITENS vezes (30 vezes no total, já que N_ITENS = 10).
+
+    Ele espera até que o buffer tenha espaço para adicionar um novo item (while (cont == N_ITENS)), isto é, quando o contador cont chega ao limite de 10 itens.
+
+    Uma vez que o produtor pode produzir, ele incrementa a variável final (para indicar onde o item será armazenado) e coloca o item no buffer na posição indicada.
+
+    O contador cont é atualizado (incrementado) e há uma pausa (sleep) de tempo aleatório para simular o tempo de processamento.
+
+    O laço é repetido até que o número total de produções seja atingido.
+
+Função consumidor
+
+void* consumidor(void *v) {
+    int i, aux;
+
+    for (i = 0; i < 3 * N_ITENS; i++) {
+        while (cont == 0) ;
+        inicio = (inicio + 1) % N_ITENS;
+        aux = buffer[inicio];
+        printf("Consumidor, item = %d.\n", aux);
+        if (aux < i)
+            printf("Erro: item foi consumido antes de ser produzido.\n");
+        else if (aux > i)
+            printf("Erro: item foi produzido antes de a posição estar livre.\n");
+        aux = cont;
+        sleep(random() % 3);
+        cont = aux - 1;
+    }
+    printf("Consumo encerrado.\n");
+    return NULL;
+}
+
+    O consumidor também entra em um laço que se repete 3 * N_ITENS vezes.
+
+    Ele espera até que o buffer tenha pelo menos um item para consumir (while (cont == 0)).
+
+    Quando o consumidor pode consumir, ele incrementa a variável inicio (para indicar a posição do item a ser retirado) e consome o item na posição indicada.
+
+    O código verifica se a produção e o consumo estão ocorrendo na ordem correta, imprimindo mensagens de erro se houver falhas de sincronização:
+
+        Se um item consumido tiver um valor menor que o esperado (aux < i), significa que foi consumido antes de ser produzido.
+
+        Se um item consumido tiver um valor maior que o esperado (aux > i), significa que foi produzido antes de a posição estar livre.
+
+    O contador cont é decrementado e há uma pausa (sleep) de tempo aleatório, permitindo que o outro thread execute.
+
+Função main
+
+int main() {
+    int i;
+    pthread_t thr_produtor, thr_consumidor;
+
+    for (i = 0; i < N_ITENS; i++)
+        buffer[i] = 0;
+
+    pthread_create(&thr_produtor, NULL, produtor, NULL);
+    pthread_create(&thr_consumidor, NULL, consumidor, NULL);
+
+    pthread_join(thr_produtor, NULL);
+    pthread_join(thr_consumidor, NULL);
+
+    return 0;
+}
+
+    No início, o buffer é inicializado com valores zero (indicando que não há itens no buffer).
+
+    São criadas duas threads: uma para o produtor e outra para o consumidor.
+
+    A função pthread_create é usada para iniciar ambas as threads.
+
+    pthread_join é usada para aguardar o término das threads antes de o programa finalizar.
+
+Resumo do Funcionamento
+
+    O produtor gera itens e os coloca no buffer, mas espera se o buffer estiver cheio (usando o contador cont).
+
+    O consumidor retira itens do buffer, mas espera se o buffer estiver vazio.
+
+    Ambas as threads competem pelo acesso ao buffer e manipulam o contador cont para garantir que a produção e o consumo estejam sincronizados.
+
+    O código verifica a integridade dos dados produzidos e consumidos, alertando para erros de sincronização, como consumo de itens antes de serem produzidos ou a produção de itens fora da ordem.
+
+Problemas de Concorrência no Código
+
+    Esperas ocupadas: O código utiliza espera ocupada (while) para verificar se o buffer está cheio ou vazio. Isso é ineficiente, pois a CPU fica ocupada verificando constantemente as condições sem fazer mais trabalho útil. Uma solução mais eficiente seria usar semaforos ou mutexes para controlar o acesso ao buffer e evitar o desperdício de CPU.
+
+    Falta de sincronização adequada: O uso de variáveis compartilhadas sem mecanismos de sincronização pode levar a condições de corrida, onde o produtor e o consumidor podem tentar acessar o buffer ao mesmo tempo de maneira inconsistente.
+
+Conclusão
+
+Este código ilustra um modelo básico de controle de concorrência no problema produtor-consumidor, mas utiliza uma abordagem simples e ineficiente (espera ocupada). Em um ambiente real de produção, seria recomendável usar mecanismos de sincronização como semáforos, mutexes ou variáveis de condição para controlar o acesso ao buffer de maneira mais eficiente.

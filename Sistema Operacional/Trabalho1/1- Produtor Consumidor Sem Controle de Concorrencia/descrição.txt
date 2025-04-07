@@ -1,0 +1,67 @@
+Este código implementa uma simulação simples de um problema do produtor-consumidor usando threads em C, com o objetivo de demonstrar a interação entre um produtor e um consumidor que compartilham um buffer. O propósito principal deste código é mostrar como duas threads (produtor e consumidor) podem trabalhar simultaneamente, com controle básico de acesso ao buffer compartilhado.
+Explicação do Código
+1. Definições e Variáveis Globais
+
+    #define N_ITENS 10: Define o tamanho do buffer compartilhado. O buffer é um array de inteiros, onde o produtor colocará os itens e o consumidor os retirará.
+
+    int buffer[N_ITENS];: O buffer compartilhado, onde o produtor coloca os itens e o consumidor os retira.
+
+    int inicio = 0, final = 0;: Variáveis para controlar as posições no buffer. inicio indica onde o consumidor retira os itens e final indica onde o produtor coloca os itens.
+
+2. Função do Produtor
+
+    O produtor gera itens e os coloca no buffer. A função produtor executa um laço que coloca 3 * N_ITENS (30 no total, considerando N_ITENS = 10) itens no buffer.
+
+    Dentro do loop, o produtor faz:
+
+        Imprime uma mensagem indicando o número do item sendo produzido.
+
+        A posição final é incrementada circularmente utilizando a fórmula final = (final + 1) % N_ITENS, que garante que a posição do buffer seja cíclica (vai de 0 a N_ITENS-1).
+
+        O item (o valor de i) é armazenado no buffer na posição indicada por final.
+
+        A função sleep(5) faz a thread do produtor "dormir" por 5 segundos antes de produzir o próximo item. Isso permite que a thread do consumidor tenha tempo de consumir itens.
+
+3. Função do Consumidor
+
+    O consumidor retira os itens do buffer e os consome. A função consumidor executa um laço para consumir 3 * N_ITENS itens.
+
+    Dentro do loop, o consumidor:
+
+        Incrementa a posição inicio de forma cíclica usando a fórmula inicio = (inicio + 1) % N_ITENS, garantindo que a posição também seja cíclica.
+
+        Imprime uma mensagem indicando o item que foi consumido (ou seja, o valor armazenado no buffer na posição inicio).
+
+        A função sleep(1) faz a thread do consumidor "dormir" por 1 segundo entre as iterações, o que permite que o produtor execute também e que ambas as threads alternem suas execuções.
+
+4. Função main
+
+    Criação do buffer: O buffer é inicializado com valores zero no início.
+
+    Criação das threads: O main cria duas threads utilizando pthread_create:
+
+        pthread_create(&thr_produtor, NULL, produtor, NULL);: Cria a thread do produtor.
+
+        pthread_create(&thr_consumidor, NULL, consumidor, NULL);: Cria a thread do consumidor.
+
+    Aguardar as threads: O main aguarda a execução das threads com pthread_join, que faz o programa esperar até que ambas as threads (produtor e consumidor) terminem sua execução.
+
+Funcionamento do Código
+
+    O produtor produz itens e os coloca no buffer. Cada item gerado é armazenado em uma posição cíclica do buffer (controle feito pelas variáveis final e a operação de módulo).
+
+    O consumidor consome itens do buffer, também de forma cíclica (controle feito pela variável inicio).
+
+    Ambos, produtor e consumidor, executam de maneira concorrente, ou seja, eles estão em execução simultânea e intercalada. O uso de sleep nas funções de cada thread garante que ambas tenham tempo para executar.
+
+    O buffer tem um tamanho fixo (10), mas não há controle explícito de sincronização no código (como semáforos ou mutexes). Portanto, o produtor pode sobrescrever um item do buffer antes que o consumidor o consuma, o que resulta em uma execução não sincronizada.
+
+Potenciais Problemas:
+
+    Condição de corrida: Como o produtor e o consumidor acessam o buffer de forma concorrente sem sincronização (por exemplo, sem mutex ou semáforos), pode ocorrer uma condição de corrida. Isso significa que o consumidor pode tentar consumir um item antes que o produtor o tenha colocado no buffer, ou pode consumir um item que já foi consumido.
+
+    Não há controle de buffer cheio ou vazio: Não há um mecanismo de controle para garantir que o produtor espere o buffer ter espaço ou que o consumidor espere até que haja itens para consumir.
+
+Propósito
+
+O código é uma demonstração simples de como o problema do produtor-consumidor pode ser modelado usando threads em C. Ele não é uma implementação robusta, mas serve como base para discussões sobre concorrência e sincronização em sistemas multithreaded. Para uma solução completa, seria necessário adicionar mecanismos de sincronização (como mutexes ou semáforos) para evitar condições de corrida e garantir que o produtor não sobrecarregue o buffer ou o consumidor tente consumir itens inexistentes.
